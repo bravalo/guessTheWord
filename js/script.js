@@ -23,6 +23,7 @@ const playAgain =document.querySelector(".play-again");
 // The hidden button that will appear prompting player to play again.
 
 const word = "magnolia";
+const guessedLetters = [];
 
 //Display bullets as symbol placeholders for the player's input letters
 const placeholder = function (word) {
@@ -38,7 +39,46 @@ placeholder(word);
 
 buttonGuess.addEventListener("click", function(e){
     e.preventDefault();
-    const guess = letterInput.value;
-    console.log(guess);
-    letterInput.value = "";
+    //Empty the text of the message element.
+    guessedMessage.innerText = "";
+    //Grab what was entered in the input.
+    const guess = letterSpace.value;
+    //Validate to make sure it is a single letter.
+    const goodGuess = validateLetter(guess);
+    
+    if (goodGuess) {
+        makeGuess(guess);
+    }
+    
+    letterSpace.value = "";
 });
+
+//Created and named a function that accepts input value as a parameter.
+//This function validates the player's input.
+const validateLetter = function (input) {
+    const acceptedLetter = /[a-zA-Z]/;
+    //Conditional block checking if input is empty.
+    if (input.length === 0) {
+        guessedMessage.innerText = "Empty space. Guess a letter!";
+    //Checking if player entered more than one letter. 
+    } else if (input.length > 1) {
+        guessedMessage.innerText = "Only enter one letter.";
+    //Check in entered character does not match the regular expression.
+    } else if (!input.match(acceptedLetter)) {
+        guessedMessage.innerText = "Enter a letter from A to Z";
+    //If all other conditions are not met the input is a letter.    
+    } else {
+        return input;
+    }
+
+};
+
+const makeGuess = function (guess) {
+    guess = guess.toUpperCase();
+    if(guessedLetters.includes(guess)){
+        guessedMessage.innerText = "Already guessed that letter. Try again.";
+    } else {
+        guessedLetters.push(guess);
+        console.log(guessedLetters);
+    }
+};
