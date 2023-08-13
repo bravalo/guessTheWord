@@ -1,4 +1,4 @@
-const listLetters = document.querySelector(".guessed-letters");
+const guessedLettersElement = document.querySelector(".guessed-letters");
 // Selects the unordered list where player’s guessed letters appear.
 
 const  buttonGuess = document.querySelector(".guess");
@@ -47,6 +47,7 @@ buttonGuess.addEventListener("click", function(e){
     const goodGuess = validateLetter(guess);
     
     if (goodGuess) {
+        // Word guess game begins with a letter.  
         makeGuess(guess);
     }
     
@@ -70,15 +71,48 @@ const validateLetter = function (input) {
     } else {
         return input;
     }
-
 };
 
 const makeGuess = function (guess) {
     guess = guess.toUpperCase();
-    if(guessedLetters.includes(guess)){
+    if(guessedLetters.includes(guess)) {
         guessedMessage.innerText = "Already guessed that letter. Try again.";
     } else {
         guessedLetters.push(guess);
         console.log(guessedLetters);
+        showGuessedLetters();
+        updateWordInProgress(guessedLetters);
+    }
+};
+
+const showGuessedLetters = function () {
+    //Clears list first.
+    guessedLettersElement.innerHTML = "";
+    for (const letter of guessedLetters) {
+        const li =document.createElement("li");
+        li.innerText = letter;
+        guessedLettersElement.append(li);
+    }
+};
+
+const updateWordInProgress = function(guessedLetters) {
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    const revealWord = [];
+    for (const letter of wordArray) {
+       if (guessedLetters.includes(letter)) {
+        revealWord.push(letter.toUpperCase());
+       } else {
+        revealWord.push("●");
+       }
+}
+wordInProgress.innerText = revealWord.join("");
+checkIfWin();
+};
+
+const checkIfWin = function () {
+    if (word.toUpperCase()===wordInProgress.innerText) {
+        MessageChannel.classList.add("win");
+        MessageChannel.innerHTML = `<p class="highlight"> You guess the correct word! Congrats!</p>`;
     }
 };
